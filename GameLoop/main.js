@@ -1,63 +1,57 @@
+const canvas = document.getElementById("canvas");
 
-let dudes = [{name: "The Devil", isFromBible: true},
-{name: "Shadow", isFromBible: false},
-{name: "Freddy Fazbear", isFromBible: true},
-];
+const ctx = canvas.getContext("2d");
 
-for(let i=0; i<dudes.length; i++){
-    console.log(bibleName(dudes[i]));
-    if(dudes[i].isFromBible){
-        console.log("Is from bible :D");
+const playerW = 50; const playerH = 50;
+let playerX = 0; let playerY = canvas.height/2 - playerH/2;
+const playerSpeed = 3;
+
+
+const enemyW = 50; const enemyH = 50;
+let enemyX = canvas.width - enemyW; let enemyY = canvas.height/2 - enemyH/2;
+const enemySpeed = 1;
+
+function gameLoop(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    ctx.fillStyle = "blue";
+    ctx.fillRect(playerX, playerY, playerW, playerH);
+    ctx.fillStyle = "red";
+    ctx.fillRect(enemyX, enemyY, enemyW, enemyH);
+
+    const dx = playerX - enemyX;
+    const dy = playerY - enemyY;
+    const distance = Math.sqrt(dx*dx + dy*dy)
+
+    if(distance != 0){
+        enemyX += dx/distance * enemySpeed;
+        enemyY += dy/distance * enemySpeed;
     }
-    else{
-        console.log("Is not from bible!!!!")
+
+    
+
+    if(keys.ArrowLeft && playerX > 0){
+        playerX-=playerSpeed;
     }
+    if(keys.ArrowRight && playerX < canvas.width-playerW){
+        playerX+=playerSpeed;
+    }
+    if(keys.ArrowDown && playerY < canvas.height-playerH){
+        playerY+=playerSpeed;
+    }
+    if(keys.ArrowUp&& playerY > 0){
+        playerY-=playerSpeed;
+    }
+    requestAnimationFrame(gameLoop);
 }
 
+let keys = {};
 
-function bibleName(dude){
-    if(dude.isFromBible){
-        return dude.name + " from bible."
-    }
-    else{
-        return dude.name + " has " + (Math.round(Math.random()*100)+1) + " sin points.";
-    }
-}
+document.addEventListener("keydown", event => {
+    keys[event.key] = true;
+})
+document.addEventListener("keyup", event => {
+    keys[event.key] = false;
+})
 
-class Bible{
-    constructor(pages, devil){
-        this.pages = pages;
-        this.devil = devil;
-    }
-    findBiblePage(){
-        return "The devil is on page " + (Math.round(Math.random()*this.pages)+1);
-    }
-}
-
-let theBible = new Bible(1000, dudes[0]);
-
-console.log(theBible.findBiblePage());
-
-
-class Bible2 extends Bible{
-    constructor(pages, devil, thePresidentOfTheUnitedStates){
-        super(pages, devil);
-        this.thePresidentOfTheUnitedStates = thePresidentOfTheUnitedStates;
-    }
-    findPresdientPage(){
-        return "The President of the United States is on page " + (Math.round(Math.random()*this.pages)+1);
-    }
-}
-
-
-let theBible2 = new Bible2(1000, dudes[0], dudes[1]);
-
-console.log(theBible2.findPresdientPage());
-
-
-const arr = [1,2,3,4,5]
-const squares = arr.map((x) => x*x)
-console.log(arr);
-
-let bestNickNameEver = "Rub";
-console.log(`It's ${bestNickNameEver}`)
+requestAnimationFrame(gameLoop);
