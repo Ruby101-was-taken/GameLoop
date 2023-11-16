@@ -18,7 +18,6 @@ function gameLoop(){
     // updatePlayerPosition();
     // updateEnemyPosition();
     // checkCollision();
-    gameOver = true;
     if(!gameOver){
         requestAnimationFrame(gameLoop);
     }
